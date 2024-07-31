@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[25]:
-
-
 import requests
 import math
 from pprint import pprint
 import pandas as pd
 
 
-# In[26]:
-
+# for getting 25 hotel IDs
 
 url = "https://www.qantas.com/hotels/api/ui/locations/London,%20England,%20United%20Kingdom/availability?checkIn=2024-08-03&checkOut=2024-08-05&adults=2&children=0&infants=0&sortBy=popularity&propertyTypes=&facilities=&subRegions=&limit=25&payWith=cash&page=2"
 headers = {
@@ -34,22 +30,14 @@ headers = {
 response = requests.request("GET", url, headers=headers)
 
 
-# In[27]:
-
-
 id_data=response.json()
-
-
-# In[32]:
-
 
 hotel_ids=[]
 for ids in id_data['results']:
     hotel_ids.append(ids['property']['id'])
-print(hotel_ids)
 
 
-# In[33]:
+# for getting combination of 25 random checkin- checkout dates
 
 
 import random
@@ -81,7 +69,7 @@ for i, (checkin, checkout) in enumerate(random_date_pairs, start=1):
     checkout_date.append(checkout.strftime('%Y-%m-%d'))
 
 
-# In[34]:
+# Exctract data and write to CSV function
 
 
 def extract_data(data):
@@ -113,7 +101,7 @@ def extract_data(data):
     
 
 
-# In[35]:
+# calling API 25 times for hotels with checkin/ checkout dates and passing ot to function created above
 
 
 for id,checkIn,checkOut in zip(hotel_ids, checkin_date, checkout_date):
@@ -122,16 +110,9 @@ for id,checkIn,checkOut in zip(hotel_ids, checkin_date, checkout_date):
     extract_data(response.json())
 
 
-# In[36]:
+# in order to add header to CSV file
 
 
 df1=pd.read_csv(r"C:\Users\goura\Downloads\output.csv", header=None)
 df1.columns=['hotel_id','check-in', 'check-out', 'rates']
 df1.to_csv(r"C:\Users\goura\Downloads\output.csv", index=False)
-
-
-# In[ ]:
-
-
-
-
